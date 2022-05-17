@@ -1,9 +1,9 @@
 package Controller
 
 import (
-	"models"
 	"context"
 	"fmt"
+	"github.com/coopersec/infomation-agent/models"
 	"log"
 	"time"
 
