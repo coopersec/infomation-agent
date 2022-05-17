@@ -82,3 +82,7 @@ func PUT(url string) {
 	io.Copy(os.Stdout, res.Body)
 
 }
+
+func Test(){
+	fmt.Printf("%s", "string")
+}

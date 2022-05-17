@@ -27,7 +27,7 @@ func getCpuInfo() {
 	cpuInfo.CpuPercent = percent[0]
 }
 
-func getMemInfo() {
+func GetMemInfo() {
 	var memInfo = new(models.MemInfo)
 	info, err := mem.VirtualMemory()
 	if err != nil {

