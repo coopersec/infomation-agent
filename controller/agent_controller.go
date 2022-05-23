@@ -1,17 +1,17 @@
 package Controller
 
 import (
-	"context"
 	"fmt"
 	"github.com/coopersec/infomation-agent/models"
-	"log"
+	"os"
+	"os/exec"
+	"syscall"
 	"time"
 
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/mem"
 	"github.com/shirou/gopsutil/net"
-	"github.com/yahoo/vssh"
 )
 
 var (
@@ -27,12 +27,12 @@ func getCpuInfo() {
 	cpuInfo.CpuPercent = percent[0]
 }
 
-func GetMemInfo() {
+func GetMemInfo() uint64 {
 	var memInfo = new(models.MemInfo)
 	info, err := mem.VirtualMemory()
 	if err != nil {
 		fmt.Printf("get mem info failed, err:%v", err)
-		return
+		return 12
 	}
 	memInfo.Total = info.Total
 	memInfo.Available = info.Available
@@ -40,6 +40,8 @@ func GetMemInfo() {
 	memInfo.UsedPercent = info.UsedPercent
 	memInfo.Buffers = info.Buffers
 	memInfo.Cached = info.Cached
+	fmt.Println((memInfo.Total / 1000000000), "GB")
+	return memInfo.Total
 }
 
 func getDiskInfo() {
@@ -104,30 +106,16 @@ func getNetInfo() {
 }
 
 // TODO: ERROR HANDLING, RETURN
-func ExecuteCMD(private_key string, cmdStr string, ip string) (string, error) {
-	vs := vssh.New().Start()
-	config, _ := vssh.GetConfigPEM("vssh", private_key)
-	vs.AddClient(ip, config, vssh.SetMaxSessions(4))
-	vs.Wait()
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	cmd := cmdStr
-	timeout, _ := time.ParseDuration("6s")
-	respChan := vs.Run(ctx, cmd, timeout)
-
-	resp := <-respChan
-	if err := resp.Err(); err != nil {
-		log.Fatal(err)
+func ExecuteCMD() {
+	PS, err := exec.LookPath("dir")
+	if err != nil {
+		fmt.Println(err)
 	}
-
-	stream := resp.GetStream()
-	defer stream.Close()
-
-	for stream.ScanStdout() {
-		txt := stream.TextStdout()
-		fmt.Println(txt)
-	}
-	return "", nil
+	fmt.Println(PS)
+	command := []string{"dir"}
+	env := os.Environ()
+	err = syscall.Exec("CMD", command, env)
+	fmt.Println(err)
 }
+
+func Test()

@@ -5,10 +5,10 @@ import (
 	"github.com/p3tr0v/chacal/antidebug"
 	"github.com/p3tr0v/chacal/antimem"
 	"github.com/p3tr0v/chacal/antivm"
-	"golang.org/x/crypto/ssh/agent"
+	"io/ioutil"
+	"net/http"
 	"os"
-
-
+	"time"
 )
 
 func main() {
@@ -35,5 +35,15 @@ func main() {
 		os.Exit(3)
 	}
 
-	fmt.Println("Chacal: No suspicious activity detected.")
+	c := http.Client{Timeout: time.Duration(1) * time.Second}
+	resp, err := c.Get("localhost:3000/test")
+	if err != nil {
+		fmt.Printf("Error %s", err)
+		return
+	}
 
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	fmt.Printf("Body : %s", body)
+
+}

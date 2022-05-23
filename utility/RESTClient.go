@@ -1,4 +1,4 @@
-package utility
+package cd
 
 import (
 	"bytes"
@@ -20,11 +20,13 @@ type Student struct {
 
 func GET() {
 	c := http.Client{Timeout: time.Duration(1) * time.Second}
-	resp, err := c.Get("https://www.google.com")
+	resp, err := c.Get("localhost:3000/login")
 	if err != nil {
 		fmt.Printf("Error %s", err)
 		return
 	}
+	resp.Header.Set("username", "tj")
+	resp.Header.Set("password", "foobar")
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	fmt.Printf("Body : %s", body)
@@ -83,6 +85,6 @@ func PUT(url string) {
 
 }
 
-func Test(){
+func Test() {
 	fmt.Printf("%s", "string")
 }
